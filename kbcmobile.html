@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KBC Quiz – Crorepati Challenge</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg1:#0b0f4a;--bg2:#02031a;--gold:#f5c542;--gold2:#a87a10;--opt:#0e1670;--ok:#1b9e4b;--bad:#c0272d;--sel:#e07b00;
+--hex:polygon(3% 0,97% 0,100% 50%,97% 100%,3% 100%,0 50%);color-scheme:dark;box-sizing:border-box;
+padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:#02031a}
+*{box-sizing:border-box}
+body{margin:0;font-family:Poppins,system-ui,sans-serif;color:#fff;min-height:100vh;
+background:radial-gradient(ellipse at 50% 0%,#1d27a0,var(--bg1) 40%,var(--bg2)) fixed}
+.wrap{max-width:1050px;margin:auto;padding:16px}
+.hidden{display:none!important}
+h1,h2{font-family:Cinzel,Georgia,serif;margin:0;text-align:center;color:var(--gold);letter-spacing:2px;text-shadow:0 0 18px #f5c54277}
+.center{text-align:center;padding:40px 10px}
+.logo{width:180px;height:180px;margin:0 auto 24px;border-radius:50%;display:grid;place-items:center;
+font:900 3rem Cinzel,serif;color:var(--gold);background:radial-gradient(circle,#1a2390,#050723);
+border:4px solid var(--gold);box-shadow:0 0 40px #f5c54288,inset 0 0 30px #000;animation:glow 2.5s infinite alternate}
+@keyframes glow{to{box-shadow:0 0 70px #f5c542cc,inset 0 0 30px #000}}
+.sub{opacity:.75;margin:14px 0 28px}
+.name-field{display:grid;gap:8px;max-width:340px;margin:0 auto 18px;text-align:left}
+.name-field label{color:var(--gold);font-size:.9rem;font-weight:600}
+.name-field input{width:100%;padding:12px 14px;border:1px solid #f5c54288;border-radius:8px;background:#070a35;color:#fff;
+font:inherit;outline:none}
+.name-field input:focus{border-color:var(--gold);box-shadow:0 0 0 3px #f5c54233}
+.player-name{color:var(--gold);font-weight:600;text-align:center;margin-bottom:14px}
+.btn{font:600 1rem Poppins,sans-serif;color:#1a1200;border:0;padding:13px 34px;border-radius:40px;cursor:pointer;
+background:linear-gradient(180deg,#ffe082,var(--gold) 50%,var(--gold2));box-shadow:0 4px 20px #f5c54255;transition:transform .15s}
+.btn:hover{transform:translateY(-2px) scale(1.03)}
+.btn.ghost{background:transparent;color:var(--gold);border:1.5px solid var(--gold);box-shadow:none;padding:8px 20px;font-size:.85rem}
+.grid{display:grid;grid-template-columns:1fr 230px;gap:20px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:10px}
+.lifes{display:flex;gap:10px}
+.life{width:62px;height:44px;border-radius:50%/60%;border:2px solid var(--gold);background:#0a1060;color:var(--gold);
+font:600 .8rem Poppins,sans-serif;cursor:pointer;transition:.2s}
+.life:hover:not(.used){background:var(--gold);color:#111}
+.life.used{opacity:.35;cursor:not-allowed;position:relative;text-decoration:line-through}
+.timer{--p:100;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;
+background:conic-gradient(var(--gold) calc(var(--p)*1%),#1b2160 0)}
+.timer b{width:52px;height:52px;border-radius:50%;background:var(--bg2);display:grid;place-items:center;font-size:1.2rem}
+.qn{text-align:center;color:var(--gold);font-weight:600;margin-bottom:10px;font-size:.95rem}
+.qbox,.opt{background:linear-gradient(90deg,var(--gold2),var(--gold),var(--gold2));padding:2px;clip-path:var(--hex)}
+.qbox div,.opt span{background:var(--opt);clip-path:var(--hex)}
+.qbox{margin-bottom:22px}
+.qbox div{padding:28px 44px;text-align:center;font-weight:600;font-size:1.2rem;min-height:96px;display:grid;place-items:center;
+background:linear-gradient(180deg,#141d9a,#0a1060)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.opts{grid-template-columns:1fr}.qbox div{padding:22px 30px;font-size:1.05rem}}
+.opt{border:0;cursor:pointer;color:#fff;font:inherit;text-align:left;transition:transform .15s}
+.opt span{display:flex;gap:10px;align-items:center;padding:14px 28px;min-height:58px}
+.opt:hover:not(:disabled){transform:scale(1.025)}
+.opt i,.opt em{font-style:normal}
+.opt i{color:var(--gold);font-weight:600}
+.opt.sel span{background:var(--sel)}.opt.ok span{background:var(--ok)}.opt.bad span{background:var(--bad)}
+.info{min-height:60px;margin-top:18px;padding:10px 14px;border-radius:14px;background:#ffffff0d;border:1px solid #ffffff22;font-size:.9rem;text-align:center}
+.bar{display:flex;align-items:center;gap:8px;margin:4px 0}
+.bar b{width:16px;color:var(--gold)}.bar s{display:block;height:12px;border-radius:6px;background:linear-gradient(90deg,var(--gold2),var(--gold))}
+.bar u{text-decoration:none;font-size:.8rem;width:38px;text-align:right}
+.side{background:#00000055;border:1px solid #f5c54244;border-radius:16px;padding:12px}
+#ladder{list-style:none;margin:0;padding:0}
+#ladder li{display:flex;justify-content:space-between;padding:5px 12px;border-radius:8px;font-size:.85rem;color:#f5c542cc}
+#ladder li.safe{color:#fff;font-weight:600}
+#ladder li.done{opacity:.4}
+#ladder li.cur{background:linear-gradient(90deg,var(--gold2),var(--gold));color:#111;font-weight:600}
+.prize{font:900 2.6rem Cinzel,serif;color:var(--gold);margin:16px 0;text-shadow:0 0 25px #f5c542aa}
+.end-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.confetti{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:5}
+.confetti-piece{position:absolute;top:-3vh;left:var(--left);width:9px;height:15px;border-radius:2px;background:var(--color);
+animation:confetti-fall var(--duration) var(--delay) linear forwards}
+@keyframes confetti-fall{to{transform:translate3d(var(--drift),110vh,0) rotate(900deg);opacity:0}}
+#end.winner h2{animation:winner-in .6s ease-out both}
+#end.winner .prize{animation:prize-pop .8s .15s both,prize-glow 1.8s 1s ease-in-out infinite alternate}
+@keyframes winner-in{from{opacity:0;transform:translateY(18px) scale(.92)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes prize-pop{from{opacity:0;transform:scale(.65)}to{opacity:1;transform:scale(1)}}
+@keyframes prize-glow{to{text-shadow:0 0 45px #f5c542,0 0 80px #f5c54299}}
+@media(prefers-reduced-motion:reduce){.confetti{display:none}#end.winner h2,#end.winner .prize{animation:none}}
+.foot{text-align:center;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section id="start" class="center">
+  <div class="logo">KBC</div>
+  <h1>CROREPATI CHALLENGE</h1>
+  <p class="sub">14 questions &middot; 3 lifelines &middot; 30 seconds each<br>Safe zones at ₹ 10,000 and ₹ 3,20,000</p>
+  <div class="name-field">
+    <label for="playerName">Your name</label>
+    <input id="playerName" name="playerName" type="text" maxlength="40" autocomplete="name" placeholder="Enter your name" required>
+    <label for="playerPassword">Password</label>
+    <input id="playerPassword" name="playerPassword" type="password" autocomplete="off" placeholder="Enter a password" required>
+  </div>
+  <button class="btn" onclick="start()">Hot Seat par baithiye</button>
+</section>
+
+<section id="game" class="hidden">
+  <div class="player-name" id="playerDisplay"></div>
+  <div class="top">
+    <div class="lifes">
+      <button class="life" id="lf" onclick="fifty()" title="50:50">50:50</button>
+      <button class="life" id="lp" onclick="poll()" title="Audience Poll">📊</button>
+      <button class="life" id="lc" onclick="phone()" title="Phone a Friend">📞</button>
+    </div>
+    <div class="timer" id="tm"><b id="tmn">30</b></div>
+  </div>
+  <div class="grid">
+    <div>
+      <div class="qn" id="qn"></div>
+      <div class="qbox"><div id="q"></div></div>
+      <div class="opts">
+        <button class="opt" onclick="pick(0)"><span><i></i><em></em></span></button>
+        <button class="opt" onclick="pick(1)"><span><i></i><em></em></span></button>
+        <button class="opt" onclick="pick(2)"><span><i></i><em></em></span></button>
+        <button class="opt" onclick="pick(3)"><span><i></i><em></em></span></button>
+      </div>
+      <div class="info" id="info"></div>
+      <div class="foot"><button class="btn ghost" onclick="quit()">Quit &amp; take money</button></div>
+    </div>
+    <div class="side"><ul id="ladder"></ul></div>
+  </div>
+</section>
+
+<section id="end" class="hidden center">
+  <div class="confetti" id="confetti" aria-hidden="true"></div>
+  <h2 id="etitle"></h2>
+  <div class="prize" id="eamt"></div>
+  <p class="player-name" id="endPlayer"></p>
+  <p class="sub" id="emsg"></p>
+  <div class="end-actions">
+    <button class="btn" id="endAction" onclick="endAction()">Get Money</button>
+    <button class="btn ghost" id="nextPlayer" onclick="nextPlayer()">Next Player</button>
+  </div>
+</section>
+
+</div>
+<script>
+// [question, [options A-D], correct index]
+const Q=[
+    ["In which date Mahatma Gandhi was born ?", ["15th august", "26th january", "2nd october", "never born"], 2],
+    ["who scored 100 international Centuries ?",["Subhman Gill", "Virat Kohli", "Ms Dhoni", "Sachine Tendulkar"], 3],
+    ["Which planet is known as Red Planet ?",[ "Venus", "Mars", "Jupitar", "Saturn"], 1],
+    ["Who was the first  Indian women to climb on Mount Everest ?", ["Santosh Yadav", "Arunima Sinha", "Bechendri Pal", "Premlata Agarwal"], 2],
+    ["Which country has the Unique flag in the World ?", ["Japan", "MOngolia", "Sri Lanka", "Nepal"], 3],
+    ["Which is the smallest prime number ?",[ "0", "1", "2 ", "3 "], 2],
+    ["Who became the first women to climb Mount Everest twice ?", ["Santosh yadav", "Arunima Sinha", "Bechendri Pal ", "Premlata Agarwal"], 0],
+    ["Which of these is the SI unit of electric Capacitance ?",[ "henry", "Farad", "Tesla ", "Ampere "], 1],
+    [" In biological classification , who is often called the darwin of the 20th century ?", ["Carl Linnaeus ", "Ernst Mayr", "Richard Dawkins ", "Gregor Mendal "], 1],
+    ["Veerabhavani is the another name for which of these Hindu Goddesses  ?",[ "Maa Lakshmi jii ", "Maa Kali jii", "Maa Saraswati jii", "Maa Parvati jii"], 3],
+    ["Haemoglobion is dissolved in the plasma of ?", ["Man", "Fish ", "frog ","Earthworm"], 3],
+    ["Which is the largest two digit prime number ?",[ "19 ", "91", "99 ", "97 "], 3],
+    ["Which Captain became the first in cricket history to lead his team to the final's of all major ICC Tournaments ?",[ "Ms Dhoni ", "Ricky Ponting ", "Rohit Sharma ", "Pat Cummins "], 2],
+    ["Who was the first cricketer to score two International fifties on the same day in two different matches ?", ["Mohammad Shahzad ", "Mohammad Hafeez", "Nawroz mangal ", "Shakib Al Hasan "], 0],
+];
+const P=[5000, 10000, 20000, 40000, 80000, 160000, 320000, 640000, 1250000, 2500000, 5000000, 10000000, 30000000, 70000000 ];
+const $=id=>document.getElementById(id);
+const opts=()=>document.querySelectorAll(".opt");
+const money=n=>n>=10000000?`₹ ${n/10000000} Crore`:"₹ "+n.toLocaleString("en-IN");
+let i,locked,t,timer,used,hidden,gameQuestions,playerName="";
+
+function show(s){["start","game","end"].forEach(x=>$(x).classList.toggle("hidden",x!==s));}
+function shuffle(items){const shuffled=[...items];
+  for(let n=shuffled.length-1;n>0;n--){const k=Math.floor(Math.random()*(n+1));[shuffled[n],shuffled[k]]=[shuffled[k],shuffled[n]];}
+  return shuffled;}
+function start(){playerName=$("playerName").value.trim();
+  if(!playerName){$("playerName").focus();$("playerName").reportValidity();return;}
+  if(!$("playerPassword").value){$("playerPassword").focus();$("playerPassword").reportValidity();return;}
+  $("playerPassword").value="";
+  i=0;used={};gameQuestions=[...shuffle(Q.slice(0,12)),...Q.slice(12)];
+  $("playerDisplay").textContent="Player: "+playerName;
+  $("end").classList.remove("winner");$("confetti").replaceChildren();show("game");
+  $("ladder").innerHTML=P.map((p,k)=>`<li id="l${k}"><span>${k+1}</span><span>${money(p)}</span></li>`).reverse().join("");
+  ["lf","lp","lc"].forEach(id=>$(id).classList.remove("used"));load();}
+function endAction(){
+  $("emsg").textContent=$("eamt").textContent+" is your in-game prize; no real money is transferred.";
+}
+function nextPlayer(){
+  $("playerName").value="";$("playerPassword").value="";playerName="";$("confetti").replaceChildren();
+  $("end").classList.remove("winner");show("start");$("playerName").focus();
+}
+function load(){
+  locked=false;hidden=[];const q=gameQuestions[i];
+  $("qn").textContent=`Question ${i+1} for ${money(P[i])}`;
+  $("q").textContent=q[0];$("info").textContent="Think carefully... 🤔";
+  opts().forEach((b,k)=>{b.className="opt";b.disabled=false;b.style.visibility="visible";
+    b.querySelector("i").textContent="ABCD"[k]+":";b.querySelector("em").textContent=q[1][k];});
+  P.forEach((_,k)=>{$("l"+k).className=(k==4||k==9?"safe ":"")+(k==i?"cur":k<i?"done":"");});
+  clearInterval(timer);t=30;tick();
+  timer=setInterval(()=>{t--;tick();if(t<=0){clearInterval(timer);locked=true;$("info").textContent="⏰ Time's up!";reveal(-1);}},1000);
+}
+function tick(){$("tm").style.setProperty("--p",t/30*100);$("tmn").textContent=t;}
+function pick(k){
+  if(locked)return;locked=true;clearInterval(timer);
+  opts()[k].classList.add("sel");$("info").textContent="Lock kiya jaye... 🔒";
+  setTimeout(()=>reveal(k),1800);
+}
+function reveal(k){
+  const a=gameQuestions[i][2],b=opts();
+  b[a].classList.remove("sel");b[a].classList.add("ok");
+  if(k>=0&&k!==a){b[k].classList.remove("sel");b[k].classList.add("bad");}
+  if(k===a)$("info").textContent="✅ Correct answer! You win "+money(P[i]);
+  setTimeout(()=>{
+    if(k===a){if(i===gameQuestions.length-1)end("win");else{i++;load();}}
+    else end(k<0?"time":"lose");
+  },2200);
+}
+function safe(){return i>=10?P[9]:i>=5?P[4]:0;}
+function quit(){if(locked)return;clearInterval(timer);end("quit");}
+function end(kind){
+  clearInterval(timer);
+  const winning=kind==="win";
+  $("end").classList.toggle("winner",winning);
+  $("confetti").replaceChildren();
+  if(winning)celebrate();
+  const m={win:[P[P.length-1],"🏆 Congratulations!","You answered all 14 questions correctly and won ₹7 Crore!"],
+   quit:[i?P[i-1]:0,"You Quit","Smart move! You walk away with your winnings."],
+   lose:[safe(),"Wrong Answer","Better luck next time. You keep your safe-zone amount."],
+   time:[safe(),"Time Over","The clock ran out. You keep your safe-zone amount."]}[kind];
+  $("etitle").textContent=winning?"Congratulations, "+playerName+"!":m[1];
+  $("eamt").textContent=money(m[0]);$("endPlayer").textContent="Player: "+playerName;$("emsg").textContent=m[2];
+  show("end");
+}
+function celebrate(){
+  const colors=["#f5c542","#ffffff","#e07b00","#1b9e4b","#c0272d"];
+  for(let n=0;n<90;n++){
+    const piece=document.createElement("span");piece.className="confetti-piece";
+    piece.style.setProperty("--left",Math.random()*100+"vw");
+    piece.style.setProperty("--delay",Math.random()*1.2+"s");
+    piece.style.setProperty("--duration",2.6+Math.random()*2+"s");
+    piece.style.setProperty("--drift",Math.random()*220-110+"px");
+    piece.style.setProperty("--color",colors[n%colors.length]);$("confetti").append(piece);
+  }
+}
+function alive(){return [0,1,2,3].filter(k=>!hidden.includes(k));}
+function use(id){if(locked||used[id])return false;used[id]=1;$(id).classList.add("used");return true;}
+function fifty(){
+  if(!use("lf"))return;const a=gameQuestions[i][2];
+  hidden=[0,1,2,3].filter(k=>k!==a).sort(()=>Math.random()-.5).slice(0,2);
+  hidden.forEach(k=>{opts()[k].style.visibility="hidden";});
+  $("info").textContent="Two wrong options removed!";
+}
+function poll(){
+  if(!use("lp"))return;const a=gameQuestions[i][2],al=alive(),two=al.length==2;
+  const c=Math.round((two?60:45)+Math.random()*(two?25:25));
+  const others=al.filter(k=>k!==a),w=others.map(()=>Math.random()+.2),s=w.reduce((x,y)=>x+y,0);
+  const pct={};pct[a]=c;others.forEach((k,n)=>pct[k]=Math.round((100-c)*w[n]/s));
+  $("info").innerHTML="<b style='color:var(--gold)'>Audience Poll</b>"+al.map(k=>
+    `<div class="bar"><b>${"ABCD"[k]}</b><s style="width:${pct[k]*2}px"></s><u>${pct[k]}%</u></div>`).join("");
+}
+function phone(){
+  if(!use("lc"))return;const a=gameQuestions[i][2];let g=a;
+  if(Math.random()>.8){const o=alive().filter(k=>k!==a);g=o[Math.floor(Math.random()*o.length)];}
+  $("info").innerHTML=`📞 Friend: "Hmm... I am ${Math.round(60+Math.random()*30)}% sure the answer is option <b style="color:var(--gold)">${"ABCD"[g]}</b>."`;
+}
+document.addEventListener("keydown",e=>{const k="abcd".indexOf(e.key.toLowerCase());
+  if(k>=0&&!$("game").classList.contains("hidden")&&opts()[k].style.visibility!=="hidden")pick(k);});
+</script>
+</body>
+</html>
